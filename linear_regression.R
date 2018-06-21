@@ -130,12 +130,37 @@ coef(summary(sat.voting.mod))
 ##   per capita (energy) from the percentage of residents living in
 ##   metropolitan areas (metro). Be sure to
 ##   1. Examine/plot the data before fitting the model
+states.info <- data.frame(attributes(states.data)[c("names", "var.labels")])
+states.info
+
+
+eVm <- lm(states.data$energy ~ states.data$metro)
+
 ##   2. Print and interpret the model `summary'
+summary(eVm)
+#*** There is a significant negative relationship between energy consumed per capata
+#*** and percentage of residents living in metropolitan areas
+
 ##   3. `plot' the model to look for deviations from modeling assumptions
+
+plot(eVm)
+#*** 3 potential outliers are identified, 2, 19 & 51
 
 ##   Select one or more additional predictors to add to your model and
 ##   repeat steps 1-3. Is this model significantly better than the model
 ##   with /metro/ as the only predictor?
+
+#*** check energy vs pop density and green house gas
+eVdg <- lm(states.data$energy ~ states.data$density + states.data$green)
+
+summary(eVdg)
+
+plot(eVdg)
+
+#*** R2 improved from 0.1154 to 0.589 for the model. 
+#*** pop density was not significant, but green house gas emmissions were
+#*** from here I would eliminate density from the model and rerun to see if there was an improvement in R2
+
 
 ## Interactions and factors
 ## ══════════════════════════
@@ -201,5 +226,15 @@ coef(summary(lm(csat ~ C(region, contr.helmert),
 ##   1. Add on to the regression equation that you created in exercise 1 by
 ##      generating an interaction term and testing the interaction.
 
+#*** No idea what to do here
+
+eVm <- lm(states.data$energy ~ C(states.data$metro, contr.helmert))
+coef(summary(lm( energy ~ C(metro, contr.helmert), data = states.data)))
+
 ##   2. Try adding region to the model. Are there significant differences
 ##      across the four regions?
+
+coef(summary(lm( energy ~  factor(region), data = states.data)))
+
+#*** There is a difference across the north east region
+
